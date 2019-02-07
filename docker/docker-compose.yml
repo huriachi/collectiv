@@ -1,0 +1,43 @@
+version: '3'
+services:
+  php:
+    build: ./php
+    volumes:
+      - ../app:/var/www/html/
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - ../app:/var/www/html
+      - ./nginx/nginx.conf/:/etc/nginx/nginx.conf
+      - ./nginx/sites/:/etc/nginx/sites-available
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - 8080:80
+    depends_on:
+      - php
+
+  mysql:
+    build: ./mysql
+    volumes:
+      - ../app/assets/default.sql:/docker-entrypoint-initdb.d/default.sql
+    environment:
+      - MYSQL_DATABASE=collectiv
+      - MYSQL_USER=collectiv
+      - MYSQL_PASSWORD=collectiv
+      - MYSQL_ROOT_PASSWORD=FR2rxsSK
+    ports:
+      - 8306:3306
+
+# These are commented out because they're only really necessary on a "production" machine.
+#  composer:
+#    image: composer:1.8
+#    command: composer install --prefer-dist -o
+#    volumes:
+#      - ../app:/app
+#
+#  node:
+#    image: node:10.15-alpine
+#    command: npm install && npm run prod
+#    volumes:
+#      - ../app:/app

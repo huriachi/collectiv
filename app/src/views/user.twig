@@ -1,0 +1,55 @@
+{% extends 'base.twig' %}
+
+{% if user is empty %}
+    {% set type = 'Create' %}
+    {% set endpoint = '/users' %}
+    {% set reset = 1 %}
+{% else %}
+    {% set type = 'Edit' %}
+    {% set endpoint = '/users/' ~ user.id ~ '/edit' %}
+    {% set reset = 0 %}
+{% endif %}
+
+{% block content %}
+    <h3 class="mb-4">{{ type }} User</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <form onsubmit="user.sendForm(event, '{{ endpoint }}', {{ reset }}); return false;" novalidate>
+                {% if user is not empty %}
+                    <input type="hidden" id="userID" value="{{ user.id }}">
+                {% endif %}
+                <div class="form-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" value="{{ user.firstname }}" required name="firstname" class="form-control" id="firstname" placeholder="John / Jane">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" value="{{ user.surname }}" required name="lastname" class="form-control" id="lastname" placeholder="Doe">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" value="{{ user.email }}" required name="email" class="form-control" id="email" placeholder="you@example.com">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" value="{{ user.username }}" required name="username" class="form-control" id="username" placeholder="Username">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" required name="password" id="password" placeholder="Password">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password_verify">Password Verify</label>
+                    <input type="password" class="form-control" required name="password_verify" id="password_verify" placeholder="Password Verify">
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="button" class="btn btn-warning float-right" onclick="user.resetForm(event)">Reset</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
